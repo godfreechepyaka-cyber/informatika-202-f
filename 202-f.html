@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>presentation-2026-09-15</title>
+<style>
+  :root{
+    --bg:#F2EDE4; --panel:#ECE5D8; --accent:#C75B2A; --accent-2:#A8481F;
+    --text:#2B2521; --text-dim:#6F665B; --line:#D9CFBE; --radius:20px;
+  }
+  *{box-sizing:border-box;}
+  html,body{ margin:0; padding:0; height:100%; background:var(--bg); color:var(--text);
+    font-family:"Noto Sans TC","PingFang TC",sans-serif; overflow:hidden; }
+  .deck{ position:relative; width:100vw; height:100vh; display:flex; align-items:center; justify-content:center; }
+  .slide{ position:absolute; inset:0; display:none; flex-direction:column; justify-content:center;
+    padding: 6vh 9vw calc(6vh + 64px) 9vw; background:radial-gradient(circle at 50% 0%, rgba(199,91,42,0.05), transparent 60%),var(--bg); }
+  .slide.active{ display:flex; }
+  .kicker{ display:inline-flex; align-items:center; gap:10px; font-size:0.85rem; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--accent); font-weight:700; margin-bottom:22px; }
+  .kicker::before{ content:""; width:26px; height:2px; background:var(--accent); display:inline-block; }
+  h1{ font-size:clamp(2rem, 4.6vw, 3.4rem); line-height:1.25; margin:0 0 18px 0; font-weight:800; font-family:"Noto Serif TC","Songti TC",serif; }
+  h1 .accent{ color:var(--accent); }
+  .subtitle{ font-size:clamp(1.05rem, 1.6vw, 1.35rem); color:var(--text-dim); margin:0 0 8px 0; font-weight:400; line-height:1.6; }
+  .lede{ font-size:clamp(1.1rem, 1.8vw, 1.5rem); color:var(--text); line-height:1.7; max-width:56ch; font-weight:500; }
+  .grid{ display:grid; gap:22px; margin-top:28px; }
+  .grid.cols-2{ grid-template-columns:1fr 1fr; }
+  .grid.cols-3{ grid-template-columns:repeat(3,1fr); }
+  .card{ background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:26px 28px; }
+  .card h3{ margin:0 0 12px 0; font-size:1.15rem; color:var(--accent-2); display:flex; align-items:center; gap:10px; }
+  .card ul{ margin:0; padding-left:1.2em; color:var(--text); line-height:1.75; font-size:1.02rem;}
+  .card p{ margin:0; color:var(--text); line-height:1.75; font-size:1.02rem;}
+  ul.bullets{ margin:22px 0 0 0; padding-left:0; list-style:none; }
+  ul.bullets li{ position:relative; padding-left:34px; margin-bottom:16px;
+    font-size:clamp(1rem,1.5vw,1.22rem); line-height:1.65; color:var(--text); }
+  ul.bullets li::before{ content:"—"; position:absolute; left:0; color:var(--accent); font-weight:700; }
+  ul.bullets li b{ color:var(--accent); }
+  .badge{ display:inline-block; background:rgba(199,91,42,0.12); color:var(--accent);
+    border:1px solid rgba(199,91,42,0.4); border-radius:999px; padding:6px 16px;
+    font-size:0.9rem; font-weight:700; margin-bottom:18px; }
+  .nav{ position:fixed; bottom:78px; right:28px; display:flex; align-items:center; gap:14px; z-index:55; }
+  .nav button{ background:var(--panel); border:1px solid var(--line); color:var(--text);
+    width:42px; height:42px; border-radius:50%; cursor:pointer; font-size:1.1rem;
+    display:flex; align-items:center; justify-content:center; transition:background .2s; }
+  .nav button:hover{ background:var(--accent-2); color:var(--bg); }
+  .part-nav{ position:fixed; left:0; right:0; bottom:0; z-index:50; display:flex;
+    background:rgba(236,229,216,0.94); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+    border-top:1px solid var(--line); }
+  .part-nav .seg{ position:relative; flex:1; display:flex; align-items:center; justify-content:center; gap:9px;
+    padding:15px 8px; border-right:1px solid var(--line); background:transparent; color:var(--text-dim);
+    font-size:0.72rem; letter-spacing:0.09em; font-weight:700; text-transform:uppercase;
+    cursor:pointer; overflow:hidden; white-space:nowrap; transition:background .25s ease, color .25s ease; }
+  .part-nav .seg:last-child{ border-right:none; }
+  .part-nav .seg .seg-num{ color:var(--text-dim); opacity:0.55; font-weight:800; }
+  .part-nav .seg:hover{ color:var(--text); }
+  .part-nav .seg.active{ background:linear-gradient(180deg, rgba(199,91,42,0.14), rgba(199,91,42,0.06)); color:var(--accent); }
+  .part-nav .seg.active .seg-num{ color:var(--accent); opacity:1; }
+  .part-nav .seg .seg-fill{ position:absolute; left:0; bottom:0; height:3px; width:0%;
+    background:var(--accent); transition:width .35s ease; }
+
+  /* pe-player-extra */
+  .nav .page-counter{ color:var(--text-dim); font-size:0.85rem; margin-right:4px; letter-spacing:0.05em; }
+  @media print{
+    html,body{ overflow:visible; height:auto; }
+    .deck{ width:auto; height:auto; display:block; }
+    .slide{ position:relative; inset:auto; display:flex !important; width:1280px; height:720px;
+      page-break-after:always; break-after:page; overflow:hidden; }
+    .nav, .part-nav{ display:none !important; }
+  }
+  @page{ size:1280px 720px; margin:0; }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck"><section class="slide active" data-part="① Intro"><br><div><a href="Lection_F_1.html">Лекция 1</a>&nbsp; &nbsp;</div><div><a href="Practice_F_1.html">Практика 1</a><br><div><a href="Home_Task_F_1.html">Домашнее задание 1</a></div></div></section></div>
+
+<div class="nav">
+  <span class="page-counter" id="pageCounter"></span>
+  <button id="prevBtn" aria-label="Previous slide">‹</button>
+  <button id="nextBtn" aria-label="Next slide">›</button>
+  <button id="fsBtn" aria-label="Fullscreen" title="Fullscreen (F)">⛶</button>
+</div>
+
+<nav class="part-nav" id="partNav"></nav>
+
+<script>
+
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let idx = 0;
+  const hashPage = parseInt((location.hash || '').slice(1), 10);
+  if (hashPage >= 1 && hashPage <= total) idx = hashPage - 1;
+  const partNav = document.getElementById('partNav');
+  const pageCounter = document.getElementById('pageCounter');
+  const parts = [];
+  slides.forEach((s,i)=>{
+    const raw = s.dataset.part || '';
+    const label = raw.replace(/^[\u2460-\u2468]\s*/,'');
+    const last = parts[parts.length-1];
+    if(last && last.label === label){ last.lastIdx = i; }
+    else { parts.push({ label, firstIdx:i, lastIdx:i }); }
+  });
+  parts.forEach((p,i)=>{
+    const seg = document.createElement('div');
+    seg.className = 'seg';
+    seg.innerHTML = '<span class="seg-fill"></span><span class="seg-num">'+(i+1)+'</span><span class="seg-label">'+p.label+'</span>';
+    seg.addEventListener('click', ()=>{ idx = p.firstIdx; render(); });
+    partNav.appendChild(seg);
+  });
+  const segEls = partNav.querySelectorAll('.seg');
+  const segFills = partNav.querySelectorAll('.seg-fill');
+  function render(){
+    slides.forEach((s,i)=> s.classList.toggle('active', i===idx));
+    if(pageCounter) pageCounter.textContent = (idx+1) + ' / ' + total;
+    try { history.replaceState(null, '', '#' + (idx+1)); } catch(e) {}
+    const partIdx = parts.findIndex(p=> idx>=p.firstIdx && idx<=p.lastIdx);
+    segEls.forEach((seg,i)=> seg.classList.toggle('active', i===partIdx));
+    if(partIdx > -1){
+      const p = parts[partIdx];
+      const span = p.lastIdx - p.firstIdx;
+      const pct = span === 0 ? 100 : ((idx - p.firstIdx) / span) * 100;
+      segFills.forEach((fill,i)=> fill.style.width = (i===partIdx ? pct : 0) + '%');
+    }
+  }
+  function go(delta){ idx = Math.min(total-1, Math.max(0, idx+delta)); render(); }
+  function toggleFullscreen(){
+    if(document.fullscreenElement) document.exitFullscreen();
+    else document.documentElement.requestFullscreen();
+  }
+  document.getElementById('prevBtn').addEventListener('click', ()=>go(-1));
+  document.getElementById('nextBtn').addEventListener('click', ()=>go(1));
+  const fsBtn = document.getElementById('fsBtn');
+  if(fsBtn) fsBtn.addEventListener('click', toggleFullscreen);
+  function isTypingTarget(){
+    const ae = document.activeElement;
+    return ae && ['INPUT','TEXTAREA'].includes(ae.tagName);
+  }
+  window.addEventListener('keydown', (e)=>{
+    if(isTypingTarget()) return;
+    if(['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)) { go(1); e.preventDefault(); }
+    if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)) { go(-1); e.preventDefault(); }
+    if(e.key === 'Home'){ idx=0; render(); }
+    if(e.key === 'End'){ idx=total-1; render(); }
+    if(e.key === 'f' || e.key === 'F'){ toggleFullscreen(); }
+  });
+  let touchX = null;
+  window.addEventListener('touchstart', e=>{ if(!isTypingTarget()) touchX = e.touches[0].clientX; });
+  window.addEventListener('touchend', e=>{
+    if(touchX===null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if(Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
+    touchX = null;
+  });
+  render();
+
+</script>
+
+
+
+
+
+
+
+</body></html>
